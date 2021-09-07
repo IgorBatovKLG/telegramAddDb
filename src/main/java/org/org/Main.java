@@ -2,8 +2,10 @@ package org.org;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.Calendar;;
+import java.util.Calendar;
+import java.util.List;
 
 public class Main {
 
@@ -16,19 +18,25 @@ public class Main {
         Calendar instance = Calendar.getInstance();
         Date date = new Date();
         instance.setTime(date); //устанавливаем дату, с которой будет производить операции
-        instance.add(Calendar.HOUR_OF_DAY, 240);
-        Date newDate = instance.getTime();
+        List<Integer> listDate = Arrays.asList(0,24,24,24,24);
+        List<Integer> listCount = Arrays.asList(195,45,20,20,20);
         SimpleDateFormat formatForDateNow = new SimpleDateFormat("yyyy.MM.dd.HH");
-                // null () = new SimpleDateFormat("E yyyy.MM.dd ‘и время’ hh:mm:ss a zzz");
-
-        System.out.printf(formatForDateNow.format(newDate));
-        String SQL_TASK = "insert into maintable (date) values(?)";
-        try (final PreparedStatement statement = connection.prepareStatement(SQL_TASK))
-        {statement.setString(1, formatForDateNow.format(newDate));
-            statement.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        for(int i=0;i<5;i++){
+            instance.add(Calendar.HOUR_OF_DAY, listDate.get(i));
+            Date newDate = instance.getTime();
+            String dateCon =  formatForDateNow.format(newDate);
+            Telegram telegram = new Telegram();
+            telegram.telegram("url",dateCon,listCount.get(i),1,false,connection);
         }
+
+//        String SQL_TASK = "insert into maintable (date) values(?)";
+//        try (final PreparedStatement statement = connection.prepareStatement(SQL_TASK))
+//        {statement.setString(1, formatForDateNow.format(newDate));
+//            statement.executeUpdate();
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+
     }
 }
 
